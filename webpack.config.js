@@ -1,10 +1,10 @@
 const path = require('path');
-const HTMLPlugin = require('html-webpack-plugin');
 const {VueLoaderPlugin} = require('vue-loader');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const ExtractPlugin = require('extract-text-webpack-plugin');
+const MiniCssPlugin = require('mini-css-extract-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
+
 
 const isDev = process.env.NODE_ENV === 'development';
 
@@ -26,6 +26,10 @@ const config = {
         loader: 'babel-loader'
       },
       {
+        test: /\.pug$/,
+        loader: 'pug-plain-loader'
+      },
+      {
         test: /\.(gif|jpg|jpeg|png|svg)$/,
         use: [
           {
@@ -41,12 +45,13 @@ const config = {
   },
   plugins: [
     new CleanWebpackPlugin('dist'),
+    new VueLoaderPlugin(),
     new webpack.DefinePlugin({
       'process.env': {
         NODE_ENV: isDev ? "'development'" : "'production'"
       }
     }),
-    new HTMLPlugin({
+    new HtmlWebpackPlugin({
       title: 'vuetodo'
     })
   ]
@@ -91,28 +96,35 @@ if(isDev){
   config.module.rules.push(
     {
       test: /\.styl/,
-      use: ExtractPlugin.extract({
-        fallnack: 'style-loader',
-        use: [
-          'css-loader',
-          {
-            loader: 'postcss-loader',
-            options: {
-              sourceMap: true
-            }
-          },
-          'stylus-loader'
-        ]
-      })
+      use: [
+        MiniCssPlugin.loader,
+        'css-loader',
+        {
+          loader: 'postcss-loader',
+          options: {
+            sourceMap: true
+          }
+        },
+        'stylus-loader'
+      ]
     },
   ),
+  config.optimization = {
+    splitChunks: {
+      cacheGroups: {
+        commons:{
+          name:'commons',
+          chunks:'initial',
+          minChunks:2
+        }
+      }
+    }
+  }
   config.plugins.push(
-    new ExtractPlugin('styles.[contentHash:8].css'),
-    new webpack.optimize.CommonsChunkPlugin({
-      name: 'vendor'
-    }),
-    new webpack.optimize.CommonsChunkPlugin({
-      name: 'runtime'
+    new MiniCssPlugin({
+      filename: '[name].[hash:8].css',
+      chunkname: '[id].[hash:8].css'
     })
   )
 }
+module.exports = config;
