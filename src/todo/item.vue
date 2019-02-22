@@ -1,13 +1,16 @@
 <template lang="pug">
+  //-给div绑定一个class列表
   div(
     :class="['todo-item',todo.completed ? 'completed' : '']"
   )
+    //-使用v-model进行双向绑定
     input(
       type="checkbox"
       class="toggle"
       v-model="todo.completed"
     )
     label {{ todo.content }}
+    //-button绑定click事件，触发deleTodo方法
     button(
       class="destory"
       @click="deleteTodo"
@@ -16,6 +19,7 @@
 
 <script>
 export default {
+  //父组件向子组件传递todo对象
   props: {
     todo: {
       type: Object,
@@ -23,6 +27,7 @@ export default {
     }
   },
   methods: {
+    // 触发父组件的del事件，所传参数为this.todo.id
     deleteTodo(){
       this.$emit('del',this.todo.id)
     }

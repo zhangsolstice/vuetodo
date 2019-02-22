@@ -1,3 +1,4 @@
+//引入path、webpack等模块
 const path = require('path');
 const {VueLoaderPlugin} = require('vue-loader');
 const webpack = require('webpack');
@@ -5,16 +6,18 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssPlugin = require('mini-css-extract-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 
-
+//判断环境变量中的NODE_ENV是否为开发版本
 const isDev = process.env.NODE_ENV === 'development';
 
+//基本配置
 const config = {
-  target: 'web',
-  entry: path.join(__dirname,'src/main.js'),
-  output:{
-    filename: 'bundle.js',
-    path: path.join(__dirname,'dist')
+  target: 'web',                                 //将webpack的编译目标设置为web平台
+  entry: path.join(__dirname,'src/main.js'),     //声明入口文件，__dirname是该项目的根目录
+  output:{                                       //声明出口文件
+    filename: 'bundle.js',                       //将挂载的App全部打包成一个bundle.js,在浏览器中可以直接运行的代码
+    path: path.join(__dirname,'dist')            //bundle.js保存的位置
   },
+  //正对不同类型的文件，定义不同的识别规则，最终打包成js文件，以供webpack处理
   module: {
     rules: [
       {
@@ -44,9 +47,9 @@ const config = {
     ]
   },
   plugins: [
-    new CleanWebpackPlugin('dist'),
+    new CleanWebpackPlugin('dist'),                //每次执行npm run build时清空dist文件夹下所有内容
     new VueLoaderPlugin(),
-    new webpack.DefinePlugin({
+    new webpack.DefinePlugin({                     //根据isDev配置process.env
       'process.env': {
         NODE_ENV: isDev ? "'development'" : "'production'"
       }
@@ -57,6 +60,7 @@ const config = {
   ]
 }
 
+//开发模式的基本配置模块中需要添加的规则
 if(isDev){
   config.module.rules.push(
     {
@@ -87,7 +91,7 @@ if(isDev){
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoEmitOnErrorsPlugin()
   )
-}else{
+}else{                                                          //生产模式的基本配置模块中需要添加的规则
   config.entry = {
     app: path.join(__dirname,'src/main.js'),
     vendor: ['vue']
@@ -127,4 +131,4 @@ if(isDev){
     })
   )
 }
-module.exports = config;
+module.exports = config;                       //声明一个config的配置，用于对外暴露

@@ -16,6 +16,7 @@
 
 <script>
 export default {
+  //父组件向子组件传递字符串对象filter和数组对象todos
   props: {
     filter: {
       type: String,
@@ -28,18 +29,22 @@ export default {
   },
   data(){
     return {
+      //states数组初始包含三个值
       states: ['all','active','completed']
     }
   },
   methods: {
+    //触发父组件的togole事件
     toggleFilter(state){
       this.$emit('togole',state)
     },
+    //触发父组件的clearAllCompleted事件
     clearAllCompleted(){
       this.$emit('clearAllCompleted')
     }
   },
   computed:{
+    //unFinishedTodoLength的值为：todos数组过滤出所有未完成的todo的新数组的length
     unFinishedTodoLength(){
       return this.todos.filter(todo => !todo.completed).length
     }

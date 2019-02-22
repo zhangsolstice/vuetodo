@@ -1,3 +1,4 @@
+//引入footer.styl文件
 import '../assets/styles/footer.styl'
 
 export default {
@@ -6,6 +7,7 @@ export default {
       author: 'zhangsolstice'
     }
   },
+  //使用渲染函数代替模板
   render(){
     return(
       <div id="footer">

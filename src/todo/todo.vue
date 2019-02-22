@@ -1,5 +1,9 @@
 <template lang="pug">
+//- 
+  整个主体分为三部分：input，item和tabs 
+-//
   section(class="real-app")
+    //-绑定enter键的keyup事件来触发addTodo方法
     input(
       type="text" 
       class="add-input" 
@@ -22,6 +26,7 @@
 </template>
 
 <script>
+//引入两个子组件，为id设置初始值
 import Tabs from './tabs.vue'
 import Item from './item.vue'
 let id = 0;
@@ -30,6 +35,7 @@ export default {
   data() {
     return {
       todos: [],
+      //filter初始值为all
       filter: 'all'
     }
   },
@@ -39,9 +45,11 @@ export default {
   },
   computed: {
     filteredTodos(){
+      //当filter值为all时，显示所有添加的列表项
       if(this.filter === 'all'){
         return this.todos
       }
+      //将判断的布尔值结果赋给completed
       const completed = this.filter === 'completed'
       return this.todos.filter(todo => completed === todo.completed)
     }
